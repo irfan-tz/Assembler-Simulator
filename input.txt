@@ -1,0 +1,3 @@
+mov R1 $2
+mov R2 $4
+add R3 R2 R1

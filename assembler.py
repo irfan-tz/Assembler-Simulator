@@ -1,7 +1,4 @@
-global registers
-global flag
-global bin_piece
-global error
+
 registers=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 mem_addr=0
 flag = 0
@@ -19,6 +16,10 @@ def halt():
 
 #read the instruction type, perform the instruction and add the appropriate opcode to bin_piece
 def instructions(piece):
+    global bin_piece
+    global registers
+    global flag
+    global error
     instr=piece[0]
     if instr=="add":
         type = "A" 
@@ -110,18 +111,23 @@ def instructions(piece):
 
 def check_size(size,num):
     num=str(num)
+    #print(size," ", num)
     if len(num)==size:
         return num
     else:
-        num = 0 *(size - len(num))  + num
+        num = "0" *(size - len(num))  + num
+        return num
 
 #creates the appropriate machine code based on the instr_type
 def syntax_piece(type,piece):
+    global bin_piece
     if type=="A":
         bin_piece = bin_piece + "00" + check_size(3,dec2binary(int(piece[1][-1]))) + check_size(3,dec2binary(int(piece[2][-1]))) + check_size(3,dec2binary(int(piece[3][-1])))
     elif type=="B":
         syn=[5,1,3,7]
+        #print(bin_piece)
         bin_piece = bin_piece + "0" + check_size(3,dec2binary(int(piece[1][-1]))) + check_size(7,dec2binary(int(piece[2][1:])))
+        #print(bin_piece)
     elif type=="C":
         syn=[5,5,3,3]
         bin_piece = bin_piece + "00000" + check_size(3,dec2binary(int(piece[1][-1]))) + check_size(3,dec2binary(int(piece[2][-1])))
@@ -145,15 +151,15 @@ def assembler(input):
 
 #read the data from input file
 if __name__ == "__main__":
-    file0 = open('input.txt', 'rb')
-    file1 = open('output.txt', 'wb')
+    file0 = open('input.txt', 'r')
+    file1 = open('output', 'w')
     input = file0.readlines()
     for line in input:
         # piece is being referred to the single line of a code 
         piece = line.split()                   
     #send the read data to assembler to process
         assembler(input)
-        file1.write(bin_piece)
+        file1.write(bin_piece+"\n")
         bin_piece=""
     else:
         if bin_piece == "1101000000000000":
@@ -163,4 +169,6 @@ if __name__ == "__main__":
         else:
             error = "Halt not encountered and end reached"
             print("error, ",error)
+            file1.close
+            file0.close
     exit
