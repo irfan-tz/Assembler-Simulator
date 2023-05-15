@@ -21,7 +21,7 @@ To run the assembler program, make sure you have the following installed:
 ## Contributing
 
 The contributors for this project are: 
-Mohd Irfan Raza
-Bhaskar Kashyap
-Md Kaif
-Mayank Kumar
+1. Mohd Irfan Raza
+2. Bhaskar Kashyap
+3. Md Kaif
+4. Mayank Kumar
