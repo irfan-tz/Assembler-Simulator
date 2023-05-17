@@ -1,5 +1,4 @@
 var x
-mov R1 R2
-ld R1 x 
-add R1 R2 R3
+mov R1 $5
+st R1 x
 hlt

@@ -98,8 +98,6 @@ def instructions(piece):
     elif instr=="st":
         type = "D"
         bin_piece = bin_piece + "00101"
-        print(piece[2])
-        print(list(mem.keys()))
         if piece[2] in list(mem.keys()):
             mem[piece[2]] = registers[int(piece[1][-1])]
         else:
@@ -262,11 +260,14 @@ if __name__ == "__main__":
     var_err = 0
     assembly_code_lines = 0
     mem_lab = {}
-    file0 = open('input.txt', 'r')
+    #file0 = open('input.txt', 'r')
     file1 = open('output', 'w')
-    input1 = file0.readlines()
 
-    for line in input1:
+    input_lines = []
+    for line in sys.stdin:
+        input_lines.append(line.strip())
+
+    for line in input_lines:
         piece = re.split(r'\s+|\t+', line.strip())
         if (piece[0] in ["add","sub","mov","ld","st","mul","div","rs","ls",
                          "xor","or","and","not","cmp","jmp","jlt","jgt","je","hlt"] or piece[0][-1] == ":"):
@@ -278,9 +279,6 @@ if __name__ == "__main__":
             mem_lab[piece[0][0:-1]] = assembly_code_lines - 1
         else:
             continue
-
-    file0.seek(0, os.SEEK_SET)
-    input_lines = file0.readlines()
 
     for line in input_lines:
         bin_piece = ""
@@ -311,14 +309,17 @@ if __name__ == "__main__":
             print("Undefined variable used.")
             break
         if bin_piece == "1101000000000000":
-            l = -1      
-        file1.write(bin_piece + "\n") 
+            l = -1  
+        if bin_piece=="":
+            continue
+        else:
+            file1.write(bin_piece + "\n") 
 
     else:
         if bin_piece == "1101000000000000":
             file1.close()
-            file0.close()
-            print("Completed")
+            #file0.close()
+            #print("Completed")
         else:
             if l == -1:
                 error = "Halt not encountered at last but before"
@@ -327,6 +328,9 @@ if __name__ == "__main__":
                 error = "Halt not encountered and end reached"
                 print(error)
             file1.close()
-            file0.close()
+            #file0.close()
 
+    file = open("output","r")
+    data = file.read()
+    sys.stdout.write(data)
     exit()
