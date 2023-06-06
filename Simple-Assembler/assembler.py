@@ -1,7 +1,6 @@
-import os
 import re
 import sys
-registers=[0,0,0,0,0,0]
+registers=[0,0,0,0,0,0,0]
 r=["R0","R1","R2","R3","R4","R5","R6","FLAGS"]
 flag = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 bin_piece=""
@@ -19,6 +18,7 @@ def dec2binary(num):
 def halt():
     return
 
+
 #read the instruction type, perform the instruction and add the appropriate opcode to bin_piece
 def instructions(piece):
     global bin_piece
@@ -34,11 +34,27 @@ def instructions(piece):
     if instr[-1]==":":
         del piece[0]
     instr=piece[0]
-    if instr=="add":
+    if instr=="mod":
+        type = "A" 
+        bin_piece = bin_piece + "10001" 
+        registers[int(piece[1][-1])] = registers[int(piece[2][-1])] % registers[int(piece[3][-1])]
+        if  piece[1] in r and piece[2] in r and piece[3] in r:
+            pass
+        else:
+            t=-1
+    elif instr=="pow":
+        type = "A" 
+        bin_piece = bin_piece + "10100" 
+        registers[int(piece[1][-1])] = registers[int(piece[2][-1])] ** registers[int(piece[3][-1])]
+        if  piece[1] in r and piece[2] in r and piece[3] in r:
+            pass
+        else:
+            t=-1
+    elif instr=="add":
         type = "A" 
         bin_piece = bin_piece + "00000" 
         registers[int(piece[1][-1])] = registers[int(piece[2][-1])] + registers[int(piece[3][-1])]
-        if  piece[1] in r:
+        if  piece[1] in r and piece[2] in r and piece[3] in r:
             pass
         else:
             t=-1
@@ -139,6 +155,22 @@ def instructions(piece):
             pass
         else:
             t=-1
+    elif instr=="xnor":
+        type = "A"  
+        bin_piece = bin_piece + "10000"
+        registers[int(piece[1][-1])] = 1-(registers[int(piece[2][-1])] ^ registers[int(piece[3][-1])])
+        if  piece[1] in r:
+            pass
+        else:
+            t=-1
+    elif instr=="nor":
+        type = "A"  
+        bin_piece = bin_piece + "10010"
+        registers[int(piece[1][-1])] = 1-(registers[int(piece[2][-1])] | registers[int(piece[3][-1])])
+        if  piece[1] in r:
+            pass
+        else:
+            t=-1
     elif instr=="or":
         type = "A"  
         bin_piece = bin_piece + "01011"
@@ -151,6 +183,14 @@ def instructions(piece):
         type = "A"  
         bin_piece = bin_piece + "01100"
         registers[int(piece[1][-1])] = registers[int(piece[2][-1])] & registers[int(piece[3][-1])] 
+        if  piece[1] in r:
+            pass
+        else:
+            t=-1
+    elif instr=="nand":
+        type = "A"  
+        bin_piece = bin_piece + "10011"
+        registers[int(piece[1][-1])] = 1-(registers[int(piece[2][-1])] & registers[int(piece[3][-1])]) 
         if  piece[1] in r:
             pass
         else:
@@ -260,13 +300,14 @@ if __name__ == "__main__":
     var_err = 0
     assembly_code_lines = 0
     mem_lab = {}
-    #file0 = open('input.txt', 'r')
+    #file0 = open('input', 'r')
     file1 = open('output', 'w')
 
     input_lines = []
+    #for line in file0.readlines():
     for line in sys.stdin:
         input_lines.append(line.strip())
-
+    #print(input_lines)
     for line in input_lines:
         piece = re.split(r'\s+|\t+', line.strip())
         if (piece[0] in ["add","sub","mov","ld","st","mul","div","rs","ls",
@@ -288,7 +329,7 @@ if __name__ == "__main__":
         try:
             assembler(piece)
         except:
-            print("Invalid")
+            print("Instruction not compatible")
             break
         if z == -1:
             print("Wrong instruction")
@@ -329,6 +370,7 @@ if __name__ == "__main__":
                 print(error)
             file1.close()
             #file0.close()
+            exit()
 
     file = open("output","r")
     data = file.read()
