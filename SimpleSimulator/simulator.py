@@ -26,13 +26,23 @@ def operate(line):
     global pc_next
     instr = line[0:5]
     if instr == "00000": #add
-        r[BitArray(bin=line[7:10]).uint] = str(int(r[BitArray(bin=line[10:13]).uint]) + int(r[BitArray(bin=line[13::]).uint]))
-        r[7] = ["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"]
+        sum = str(int(r[BitArray(bin=line[10:13]).uint]) + int(r[BitArray(bin=line[13::]).uint]))
+        if len(sum)>16:
+            r[BitArray(bin=line[7:10]).uint] = "0"
+            r[7][-4] = "1"
+        else:
+            r[BitArray(bin=line[7:10]).uint] = sum
+            r[7] = ["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"]
         pc_next = pc + 1
 
     elif instr == "00001": #sub
-        r[BitArray(bin=line[7:10]).uint] = str(int(r[BitArray(bin=line[10:13]).uint]) + int(r[BitArray(bin=line[13::]).uint]))
-        r[7] = ["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"]
+        sub = str(int(r[BitArray(bin=line[10:13]).uint]) - int(r[BitArray(bin=line[13::]).uint]))
+        if int(r[BitArray(bin=line[13::]).uint])>int(r[BitArray(bin=line[10:13]).uint]):
+            r[BitArray(bin=line[7:10]).uint] = "0"
+            r[7][-4] = "1"
+        else:
+            r[BitArray(bin=line[7:10]).uint] = sub
+            r[7] = ["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"]
         pc_next = pc + 1
 
     elif instr == "00110": #mul
